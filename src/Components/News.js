@@ -1,8 +1,20 @@
 import React, { Component } from "react";
 import NewsItem from "./NewsItem";
 import Spinner from "./Spinner";
+import PropTypes from 'prop-types'
+
 
 export class News extends Component {
+  static defaultProps={
+    country:'in',
+    pageSize:8,
+    category:'general',
+  }
+  static propTypes = {
+    country:PropTypes.string,
+    pageSize:PropTypes.number,
+   category:PropTypes.string,
+  }
   constructor() {
     super();
     console.log("Hello I am a constructor from News component");
@@ -15,7 +27,7 @@ export class News extends Component {
 
   async componentDidMount() {
     console.log("cdm");
-    let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=f21379f49d2548abbc74770f236dbf24&page=1&pagesize=${this.props.pageSize}`;
+    let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=f21379f49d2548abbc74770f236dbf24&page=1&pagesize=${this.props.pageSize}`;
     this.setState({loading:true});
     let data = await fetch(url);
     let parsedData = await data.json();
@@ -29,7 +41,7 @@ export class News extends Component {
 
   handlePrevClick = async () => {
     console.log("Previous");
-    let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=f21379f49d2548abbc74770f236dbf24&page=${
+    let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=f21379f49d2548abbc74770f236dbf24&page=${
       this.state.page - 1
     }&pagesize=${this.props.pageSize}`;
     this.setState({loading:true});
@@ -50,7 +62,7 @@ export class News extends Component {
         Math.ceil(this.state.totalResults / this.props.pageSize)
       )
     ) {
-      let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=f21379f49d2548abbc74770f236dbf24&page=${
+      let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=f21379f49d2548abbc74770f236dbf24&page=${
         this.state.page + 1
       }&pagesize=${this.props.pageSize}`;
       this.setState({loading:true});
@@ -67,8 +79,8 @@ export class News extends Component {
   render() {
     console.log("render");
     return (
-      <div className="container my-3">
-        <h1 className="text-center">News Monkey - Top Headlines</h1>
+      <div className="container">
+        <h1 className="text-center my-3">News Monkey - Top Headlines</h1>
         {this.state.loading && <Spinner />}
         <div className="row">
           {!this.state.loading&&this.state.articles.map((element) => {
